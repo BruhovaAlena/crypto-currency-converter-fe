@@ -1,23 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Button,
   Flex,
   Heading,
-  IconButton,
-  Input,
   Select,
   Text,
-  VStack,
+  Icon,
   NumberInput,
   NumberInputField,
 } from '@chakra-ui/react';
 import { Currency, getCurrencyData } from './utils/requests';
 import './App.css';
-import { IoSwapHorizontalOutline } from 'react-icons/io5';
+import {} from 'react-icons/io5';
+import { AiOutlineInfoCircle } from 'react-icons/ai';
 
 const CurrencyConverter = () => {
-  const [firstCurrency, setFirstCurrency] = useState('');
-  const [secondCurrency, setSecondCurrency] = useState('USD');
+  const [selectedCurrency, setSelectedCurrency] = useState('');
   const [result, setResult] = useState<Currency[] | undefined>(undefined);
   const [firstValue, setFirstValue] = useState(0);
   const [secondValue, setSecondValueYouGet] = useState(0);
@@ -29,19 +26,17 @@ const CurrencyConverter = () => {
     getData();
   }, []);
 
-  const first = result?.find((res) => res.name === firstCurrency);
-  console.log('first', first);
-
-  const convert = () => {
-    if (first) {
-      const lala = setSecondValueYouGet(firstValue * first.quote['USD'].price);
-      return lala;
-    }
-  };
+  const first = result?.find((res) => res.name === selectedCurrency);
 
   return (
     <Flex flexDirection={'column'} bgColor={'green.500'} h="100vh">
-      <Heading alignSelf="center" color="white" size="2xl" mt="15">
+      <Heading
+        alignSelf="center"
+        color="white"
+        size="2xl"
+        mt="15"
+        marginTop="10"
+      >
         Crypto-currency converter
       </Heading>
       <Flex
@@ -50,53 +45,76 @@ const CurrencyConverter = () => {
         alignSelf="center"
         paddingY="10"
         backgroundColor={'whiteAlpha.800'}
-        height="400"
+        height="200"
         marginTop="10"
+        flexDirection={'column'}
       >
-        {' '}
-        <Flex marginLeft="10" flexDirection={'column'}>
-          <Text>You Have</Text>
+        <Flex marginTop="5">
           <NumberInput
+            marginLeft="10"
+            isDisabled={!selectedCurrency}
+            variant={'filled'}
             size={'lg'}
             value={firstValue}
-            onChange={(val) => setFirstValue(Number(val))}
+            onChange={(val) => {
+              setFirstValue(Number(val));
+              if (first) {
+                const lala = setSecondValueYouGet(
+                  Number(val) * first.quote['USD'].price
+                );
+                return lala;
+              }
+            }}
             defaultValue={0}
           >
             <NumberInputField />
           </NumberInput>
+          <Flex flexDir={'column'} marginX="5">
+            <Select
+              size="lg"
+              placeholder="Select crypto currency"
+              value={selectedCurrency}
+              onChange={(e) => {
+                setSelectedCurrency(e.target.value);
+              }}
+              width="2xs"
+              variant="filled"
+            >
+              {result?.map((currency) => (
+                <option value={currency.name}>{currency.name}</option>
+              ))}
+            </Select>
+            <Flex marginTop="2">
+              <Icon as={AiOutlineInfoCircle} marginTop="1" marginRight="1" />
+              <Text>You need to choose crypto currency</Text>
+            </Flex>
+          </Flex>
+
+          <Flex flexDirection={'column'}>
+            <NumberInput
+              isDisabled={!selectedCurrency}
+              variant={'filled'}
+              size={'lg'}
+              defaultValue={0}
+              value={secondValue}
+              onChange={(val) => {
+                setSecondValueYouGet(Number(val));
+                if (first) {
+                  console.log('secondValue', secondValue);
+                  const lala = setFirstValue(
+                    Number(val) / first.quote['USD'].price
+                  );
+                  return lala;
+                }
+              }}
+            >
+              <NumberInputField />
+            </NumberInput>
+          </Flex>
+          <Text marginRight="10" marginTop="2" fontSize="2xl" marginLeft="5">
+            USD
+          </Text>
         </Flex>
-        <Select
-          placeholder="Select option"
-          value={firstCurrency}
-          onChange={(e) => setFirstCurrency(e.target.value)}
-        >
-          {result?.map((currency) => (
-            <option value={currency.name}>{currency.name}</option>
-          ))}
-        </Select>
-        <IconButton
-          aria-label="swap"
-          icon={<IoSwapHorizontalOutline height={20} width={200} />}
-          size="lg"
-          rounded="full"
-        ></IconButton>
-        <Flex flexDirection={'column'}>
-          <Text>You Get</Text>
-          <NumberInput
-            variant="flushed"
-            placeholder="Flushed"
-            size={'lg'}
-            defaultValue={0}
-            value={secondValue}
-            // onChange={(e) => setValueYouGet(Number(e))}
-          >
-            <NumberInputField />
-          </NumberInput>
-        </Flex>
-        <Text marginRight="10">USD</Text>
-        <VStack justifyContent={'center'} bgColor="red">
-          <Button onClick={() => convert()}>Convert</Button>
-        </VStack>
       </Flex>
     </Flex>
   );
