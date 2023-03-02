@@ -59,10 +59,12 @@ const CurrencyConverter = () => {
             onChange={(val) => {
               setFirstValue(Number(val));
               if (first) {
-                const lala = setSecondValueYouGet(
+                const firstResult = setSecondValueYouGet(
                   Number(val) * first.quote['USD'].price
                 );
-                return lala;
+                const roundFirstResult =
+                  Math.round(Number(firstResult) * 100) / 100;
+                return roundFirstResult;
               }
             }}
             defaultValue={0}
@@ -100,11 +102,12 @@ const CurrencyConverter = () => {
               onChange={(val) => {
                 setSecondValueYouGet(Number(val));
                 if (first) {
-                  console.log('secondValue', secondValue);
-                  const lala = setFirstValue(
+                  const secondResult = setFirstValue(
                     Number(val) / first.quote['USD'].price
                   );
-                  return lala;
+                  const roundSecondResult =
+                    Math.round(Number(secondResult) * 100) / 100;
+                  return roundSecondResult;
                 }
               }}
             >
