@@ -20,7 +20,7 @@ export const getCurrencyData = async ({ onSuccess }: GetAllData) => {
   try {
     const response = await axios({
       method: 'get',
-      baseURL: 'http://localhost:8000',
+      baseURL: process.env.REACT_APP_API_BASE_URL,
       url: '/currencyData',
     });
 
