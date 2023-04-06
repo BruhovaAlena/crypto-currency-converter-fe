@@ -27,6 +27,7 @@ export const MobileLatestConversions = ({
         gap="10px"
         flexWrap={{ md: 'wrap' }}
         justifyContent={'center'}
+        w="full"
       >
         {data.map(
           ({

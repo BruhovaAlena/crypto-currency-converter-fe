@@ -11,4 +11,5 @@ export const COLORS = {
   eth: '#627eea',
   usdt: '#26a17b',
   doge: '#c3a634',
+  grayBg: '#f5f5f5',
 };

@@ -23,8 +23,8 @@ export const LatestsConversions = ({ data }: LatestConversionsProps) => {
         Latest conversions
       </Text>
 
-      <Flex flexDir="column" gap="10px">
-        <Flex gap="20px">
+      <Flex flexDir="column">
+        <Flex gap="20px" pl="8px">
           <Text color={COLORS.blue} fontWeight="semibold" w="30%">
             Transaction number
           </Text>
@@ -35,29 +35,39 @@ export const LatestsConversions = ({ data }: LatestConversionsProps) => {
             Amount
           </Text>
         </Flex>
+        {data.length !== 0 && <Flex bgColor={COLORS.lightGray} h="1px" />}
 
         {data.map(
-          ({
-            id,
-            date,
-            amountOfCryptoCurrency,
-            amountOfUsd,
-            cryptoCurrency,
-          }) => {
+          (
+            { id, date, amountOfCryptoCurrency, amountOfUsd, cryptoCurrency },
+            index
+          ) => {
+            const isEven = (index + 1) % 2 === 0;
             return (
-              <Flex flexDir="row" alignItems="center" gap="10px" key={id}>
-                <Text w="30%">{formatTransactionNumber(id)}</Text>
-                <Text w="25%">{format(new Date(date), 'dd MMM yyyy')}</Text>
-                <Flex flexDir="row" alignItems="center" gap="10px" w="40%">
-                  <Text noOfLines={1} flex={1}>
-                    {amountOfCryptoCurrency} {cryptoCurrency}
-                  </Text>
-                  <Text>-</Text>
-                  <Text noOfLines={1} flex={1}>
-                    USD {formatUsdValue(amountOfUsd)}
-                  </Text>
+              <>
+                <Flex
+                  flexDir="row"
+                  alignItems="center"
+                  gap="10px"
+                  key={id}
+                  bgColor={isEven ? COLORS.grayBg : COLORS.white}
+                  h="40px"
+                  pl="8px"
+                >
+                  <Text w="30%">{formatTransactionNumber(id)}</Text>
+                  <Text w="25%">{format(new Date(date), 'dd MMM yyyy')}</Text>
+                  <Flex flexDir="row" alignItems="center" gap="10px" w="40%">
+                    <Text noOfLines={1} flex={1}>
+                      {amountOfCryptoCurrency} {cryptoCurrency}
+                    </Text>
+                    <Text>-</Text>
+                    <Text noOfLines={1} flex={1}>
+                      USD {formatUsdValue(amountOfUsd)}
+                    </Text>
+                  </Flex>
                 </Flex>
-              </Flex>
+                <Flex bgColor={COLORS.lightGray} h="1px" />
+              </>
             );
           }
         )}

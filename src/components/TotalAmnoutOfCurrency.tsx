@@ -38,13 +38,14 @@ const TotalAmnoutOfCurrency = ({
   iconName,
 }: TotalAmountOfCurrency) => {
   const mappedIcon = IconMapper[iconName];
+  const roundedAmountOfCurrency = Math.round(amountOfCurrency * 100) / 100;
   return (
     <Flex gap="10px" alignItems="center" mb="20px">
       {hasIcon && (
         <Icon as={mappedIcon.icon} w="30px" h="30px" color={mappedIcon.color} />
       )}
       <Text>
-        {amountOfCurrency} {nameOfCurrency}
+        {roundedAmountOfCurrency} {nameOfCurrency}
       </Text>
       <Text>= {formatUsd.format(amountOfUsd)}</Text>
     </Flex>
