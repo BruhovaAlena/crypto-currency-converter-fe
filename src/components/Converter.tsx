@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Flex, Icon, Button } from '@chakra-ui/react';
+import { Flex, Icon, Button, Text } from '@chakra-ui/react';
 import { COLORS } from '../constants/colors';
 import { createConversion, Currency, getCurrencyData } from '../utils/requests';
 import { BsCurrencyDollar } from 'react-icons/bs';
@@ -65,6 +65,18 @@ const Converter = () => {
       w={{ lg: '50%', base: '100%' }}
       justifyContent={'center'}
     >
+      <Text
+        w={{ base: '250px', md: '300px' }}
+        fontSize={{
+          base: 'xl',
+          md: '2xl',
+        }}
+        fontWeight="semibold"
+        color={COLORS.black}
+        textAlign="center"
+      >
+        Choose a Cryptocurrency and change it to USD
+      </Text>
       <CurrencyPicker
         onClickCurrency={(name) => setSelectedCurrency(name)}
         selectedCurrency={selectedCurrency}
