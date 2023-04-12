@@ -7,26 +7,61 @@ type Quote = {
 export type Currency = {
   id: number;
   name: string;
-  quote: {
-    [key: string]: Quote;
-  };
+  symbol: string;
+  // quote: {
+  //   [key: string]: Quote;
+  // };
+  priceInUsd: number;
 };
 
-type GetAllData = {
-  onSuccess: (data: Currency[]) => void;
+export const getCurrencyData = async () => {
+  const response = await axios({
+    method: 'get',
+    baseURL: process.env.REACT_APP_API_BASE_URL,
+    url: '/currencyData',
+  });
+
+  return response.data as Currency[];
 };
 
-export const getCurrencyData = async ({ onSuccess }: GetAllData) => {
-  try {
-    const response = await axios({
-      method: 'get',
-      baseURL: process.env.REACT_APP_API_BASE_URL,
-      url: '/currencyData',
-    });
+type CreateConversion = {
+  usd: number;
+  cryptoCurrency: number;
+  name: string;
+};
 
-    const allData = response.data.data;
-    onSuccess(allData);
-  } catch (error) {
-    console.log('error', error);
-  }
+export const createConversion = async ({
+  cryptoCurrency,
+  usd,
+  name,
+}: CreateConversion) => {
+  await axios({
+    method: 'post',
+    baseURL: process.env.REACT_APP_API_BASE_URL,
+    url: '/addConversion',
+
+    data: {
+      usd: String(usd),
+      name,
+      cryptoCurrency: String(cryptoCurrency),
+    },
+  });
+};
+
+export const getLatestConversions = async () => {
+  const response = await axios({
+    method: 'get',
+    baseURL: process.env.REACT_APP_API_BASE_URL,
+    url: `/latestConversion`,
+  });
+  return response.data;
+};
+
+export const getTotalConversions = async () => {
+  const response = await axios({
+    method: 'get',
+    baseURL: process.env.REACT_APP_API_BASE_URL,
+    url: `/totalConversions`,
+  });
+  return response.data;
 };
