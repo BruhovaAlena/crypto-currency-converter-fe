@@ -1,58 +1,21 @@
-import React, { useState } from 'react';
 import { Flex, Icon, Button, Text } from '@chakra-ui/react';
 import { COLORS } from '../constants/colors';
-import { createConversion, Currency, getCurrencyData } from '../utils/requests';
 import { BsCurrencyDollar } from 'react-icons/bs';
 import CurrencyPicker from './CurrencyPicker';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import NumberInput from './NumberInput';
 import { IconMapper, IconMapperKeys } from './TotalAmnoutOfCurrency';
+import { useConverter } from '../hooks/useConverter';
 
 const Converter = () => {
-  const [selectedCurrency, setSelectedCurrency] = useState('BTC');
-  const [valueOfCrypto, setValueOfCrypto] = useState<number | undefined>(
-    undefined
-  );
-  const [valueOfUsd, setValueOfUsd] = useState<number | undefined>(undefined);
-
-  const { data: currencyData } = useQuery<Currency[]>({
-    queryKey: ['data'],
-    queryFn: getCurrencyData,
-  });
-
-  const queryClient = useQueryClient();
-
-  const putMutationOnClickConvert = useMutation({
-    mutationFn: createConversion,
-    onSuccess: (data) => {
-      queryClient.setQueryData(['latest'], data);
-      queryClient.invalidateQueries({ queryKey: ['latest'] });
-      queryClient.invalidateQueries({ queryKey: ['total'] });
-    },
-    onError: (error) => {
-      console.log('error', error);
-    },
-  });
-
-  const selectedCryptoCurrencyData = currencyData?.find(
-    (res) => res.symbol === selectedCurrency
-  );
-
-  const convert = () => {
-    if (selectedCryptoCurrencyData && valueOfCrypto) {
-      const convertedValue =
-        Math.round(
-          Number(valueOfCrypto * selectedCryptoCurrencyData.priceInUsd) * 100
-        ) / 100;
-
-      setValueOfUsd(convertedValue);
-      putMutationOnClickConvert.mutate({
-        cryptoCurrency: valueOfCrypto,
-        name: selectedCurrency,
-        usd: convertedValue,
-      });
-    }
-  };
+  const {
+    convert,
+    selectedCurrency,
+    setSelectedCurrency,
+    setValueOfCrypto,
+    setValueOfUsd,
+    valueOfCrypto,
+    valueOfUsd,
+  } = useConverter();
   const mappedIcon = IconMapper[selectedCurrency as IconMapperKeys];
 
   return (
@@ -78,7 +41,10 @@ const Converter = () => {
         Choose a Cryptocurrency and change it to USD
       </Text>
       <CurrencyPicker
-        onClickCurrency={(name) => setSelectedCurrency(name)}
+        onClickCurrency={(name) => {
+          setSelectedCurrency(name);
+          setValueOfUsd(0);
+        }}
         selectedCurrency={selectedCurrency}
       />
 
@@ -114,7 +80,6 @@ const Converter = () => {
             isReadOnly
             value={valueOfUsd}
             onChange={(e) => {
-              console.log('first');
               setValueOfUsd(Number(e.target.value));
               setValueOfCrypto(undefined);
             }}

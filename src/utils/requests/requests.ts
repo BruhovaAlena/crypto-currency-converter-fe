@@ -1,16 +1,9 @@
 import axios from 'axios';
 
-type Quote = {
-  price: number;
-};
-
 export type Currency = {
   id: number;
   name: string;
   symbol: string;
-  // quote: {
-  //   [key: string]: Quote;
-  // };
   priceInUsd: number;
 };
 
